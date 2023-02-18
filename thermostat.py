@@ -1,12 +1,26 @@
 from gpiozero import Servo
 from time import sleep
 
-servo = Servo(4)
+myGPIO=4
+
+myCorrection=0.45
+maxPW=(2.0+myCorrection)/1000
+minPW=(1.0-myCorrection)/1000
+
+servo = Servo(myGPIO,min_pulse_width=minPW,max_pulse_width=maxPW)
 
 while True:
-    servo.min()
-    sleep(1)
-    servo.mid()
-    sleep(1)
-    servo.max()
-    sleep(1)
+
+  print("Set value range -1.0 to +1.0")
+  for value in range(0,21):
+    value2=(float(value)-10)/10
+    servo.value=value2
+    print(value2)
+    sleep(0.5)
+
+  print("Set value range +1.0 to -1.0")
+  for value in range(20,-1,-1):
+    value2=(float(value)-10)/10
+    servo.value=value2
+    print(value2)
+    sleep(0.5)
