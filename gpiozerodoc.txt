@@ -1,0 +1,7 @@
+sudo apt install python-gpiozero-doc
+
+python3 -m http.server -d /usr/share/doc/python-gpiozero-doc/html
+
+thermo.local:8000
+
+
