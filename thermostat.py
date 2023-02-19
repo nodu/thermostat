@@ -1,7 +1,7 @@
 from gpiozero import Servo
 from time import sleep
 
-myGPIO=4
+myGPIO=18
 
 myCorrection=0.45
 maxPW=(2.0+myCorrection)/1000
