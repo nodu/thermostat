@@ -15,3 +15,9 @@ The above library saved the project!
 
 
 cp-rsync ~/Code/thermostat thermo:~/
+
+Range
+servo.value=-.8 - 50
+servo.value=.6 - 74?
+servo.value=.2 - 69
+
