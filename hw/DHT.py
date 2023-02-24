@@ -116,7 +116,7 @@ class sensor:
       b2 = (self._code >> 16) & 0xff
       b3 = (self._code >> 24) & 0xff
       b4 = (self._code >> 32) & 0xff
-      
+
       chksum = (b1 + b2 + b3 + b4) & 0xFF
 
       if chksum == b0:
@@ -214,9 +214,8 @@ if __name__== "__main__":
    import DHT
 
    def callback(data):
-      print("{:.3f} {:2d} {} {:3.1f} {:3.1f} *".
-         format(data[0], data[1], data[2], data[3], data[4]))
-
+       print(data[3])
+      #print("{:.3f} {:2d} {} {:3.1f} {:3.1f} *".format(data[0], data[1], data[2], data[3], data[4]))
    argc = len(sys.argv) # get number of command line arguments
 
    if argc < 2:
@@ -245,8 +244,8 @@ if __name__== "__main__":
                s[1].read() # values displayed by callback
             else:
                d = s[1].read()
-               print("{:.3f} {:2d} {} {:3.1f} {:3.1f}".
-                  format(d[0], d[1], d[2], d[3], d[4]))
+               print(d[3])
+               #print("{:.3f} {:2d} {} {:3.1f} {:3.1f}".format(d[0], d[1], d[2], d[3], d[4]))
          time.sleep(2)
       except KeyboardInterrupt:
          break
