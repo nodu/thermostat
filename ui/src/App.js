@@ -79,13 +79,13 @@ function App() {
   const setSetNewTemp = (e) => {
     setNewVal(e.target.value);
   };
+  // {/* <input type="number" value={newTemperature} onChange={handleNewTemperatureChange} /> */}
+  // {/* <button onClick={handleSetTemperature}>Set Temperature</button> */}
+  // {/* <button onClick={handleGetTemperature}>Get Temperature</button> */}
+  // {/* <br /> */}
 
   return (
     <div>
-      {/* <input type="number" value={newTemperature} onChange={handleNewTemperatureChange} /> */}
-      {/* <button onClick={handleSetTemperature}>Set Temperature</button> */}
-      {/* <button onClick={handleGetTemperature}>Get Temperature</button> */}
-      {/* <br /> */}
       <hr />
       <button value={0} onClick={setSetNewTemp}>off</button>
       <button value={70} onClick={setSetNewTemp}>70</button>

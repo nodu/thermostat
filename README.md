@@ -37,3 +37,23 @@ GPIOZERO_PIN_FACTORY=pigpio python thermostat/hw/off.py
 python thermostat/hw/DHT.py 4 
 
 ~/go/bin/air .
+
+cp build files to thermo: /var/www/thermo/html
+  cp -r thermostat/ui/build/* /var/www/thermo/html/
+
+nginx block:
+	root /var/www/thermo/html;
+	location /temperature {
+		proxy_pass http://localhost:8080;
+		proxy_set_header X-Forwarded-Host $server_name;
+    proxy_set_header X-Forwarded-Proto https;
+    proxy_set_header X-Forwarded-For $remote_addr;
+	}
+
+Build api binary: // needs to be built with 32bit for the raspi (just build on raspi)
+go build main.go
+
+Start go web server on reboot:
+edit crontab with @reboot and path to built binary
+
+
