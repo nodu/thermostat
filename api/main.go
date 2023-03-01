@@ -12,8 +12,7 @@ import (
 )
 
 type Temperature struct {
-	// move back to float64 to remove a losts of casting
-	Value float32 `json:"value"`
+	Value float64 `json:"value"`
 }
 
 var temperature Temperature
@@ -38,18 +37,18 @@ func check(e error) {
 		panic(e)
 	}
 }
-func readDatabase() float32 {
+func readDatabase() float64 {
 	dat, err := os.ReadFile("/home/pi/thermostat/api/database")
 	check(err)
 	num, error := strconv.ParseFloat(string(dat), 32)
 	if error != nil {
 		num = 0
 	}
-	return float32(num)
+	return num
 }
 
-func writeDatabase(temp float32) {
-	err := os.WriteFile("/home/pi/thermostat/api/database", []byte(strconv.FormatFloat(float64(temp), 'f', -1, 32)), 0644)
+func writeDatabase(temp float64) {
+	err := os.WriteFile("/home/pi/thermostat/api/database", []byte(strconv.FormatFloat(temp, 'f', -1, 32)), 0644)
 	check(err)
 }
 
