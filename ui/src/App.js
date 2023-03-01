@@ -14,6 +14,7 @@ function App() {
       const response = await fetch("/temperature");
       const data = await response.json();
       setTemperature(data.value);
+      setNewVal(data.value);
     } catch (error) {
       console.error(error);
     }
@@ -67,6 +68,7 @@ function App() {
   return (
     <div>
       <hr />
+      <p>"Set" Temperature: {newVal}</p>
       <button className="button" value={0} onClick={setSetNewTemp}>off</button>
       <button className="button" value={70} onClick={setSetNewTemp}>70</button>
       <button className="button" value={72} onClick={setSetNewTemp}>72</button>
