@@ -12,6 +12,7 @@ import (
 )
 
 type Temperature struct {
+	// move back to float64 to remove a losts of casting
 	Value float32 `json:"value"`
 }
 
