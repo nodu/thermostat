@@ -37,32 +37,13 @@ function App() {
   };
 
   const handleSetTemperatureManual = async () => {
-    let position
-
-    switch (parseInt(newVal)) {
-      case 0:
-        position = -.8
-        break;
-      case 70:
-        position = .3
-        break;
-      case 72:
-        position = .45
-        break;
-      case 75:
-        position = .6
-        break;
-      default:
-        break;
-    }
-
     try {
       const response = await fetch("/temperature", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ value: position }),
+        body: JSON.stringify({ value: parseInt(newVal) }),
       });
       await response.json();
       setTemperature(newVal);
@@ -81,7 +62,6 @@ function App() {
   };
   // {/* <input type="number" value={newTemperature} onChange={handleNewTemperatureChange} /> */}
   // {/* <button onClick={handleSetTemperature}>Set Temperature</button> */}
-  // {/* <button onClick={handleGetTemperature}>Get Temperature</button> */}
   // {/* <br /> */}
 
   return (
@@ -93,6 +73,7 @@ function App() {
       <button className="button" value={75} onClick={setSetNewTemp}>75</button>
       <br />
       <button className="button" onClick={handleSetTemperatureManual}>Set Temperature Manual</button>
+      <button onClick={handleGetTemperature}>Get Temperature</button>
 
     </div>
   );

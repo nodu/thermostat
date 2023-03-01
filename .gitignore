@@ -58,6 +58,8 @@ Thumbs.db
 
 # production
 /build
+ui/build
+api/build
 
 # misc
 .DS_Store
