@@ -87,12 +87,12 @@ function App() {
   return (
     <div>
       <hr />
-      <button value={0} onClick={setSetNewTemp}>off</button>
-      <button value={70} onClick={setSetNewTemp}>70</button>
-      <button value={72} onClick={setSetNewTemp}>72</button>
-      <button value={75} onClick={setSetNewTemp}>75</button>
+      <button className="button" value={0} onClick={setSetNewTemp}>off</button>
+      <button className="button" value={70} onClick={setSetNewTemp}>70</button>
+      <button className="button" value={72} onClick={setSetNewTemp}>72</button>
+      <button className="button" value={75} onClick={setSetNewTemp}>75</button>
       <br />
-      <button onClick={handleSetTemperatureManual}>Set Temperature Manual</button>
+      <button className="button" onClick={handleSetTemperatureManual}>Set Temperature Manual</button>
 
     </div>
   );

@@ -11,3 +11,38 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+.button {
+    appearance: auto;
+    text-rendering: auto;
+    display: inline-block;
+    color: buttontext;
+    letter-spacing: normal;
+    word-spacing: normal;
+    line-height: normal;
+    text-transform: none;
+    text-indent: 0px;
+    text-shadow: none;
+    text-align: center;
+    align-items: flex-start;
+    box-sizing: border-box;
+    background-color: buttonface;
+    margin: 0em;
+    border-width: 2px;
+    border-style: outset;
+    border-color: buttonborder;
+    border-image: initial;
+
+    padding: 0.75rem 1rem;
+    cursor: pointer;
+    transition: all .14s ease-out;
+    border: solid 0.0625rem #000;
+    border-radius: 0.25rem;
+    text-decoration: none;
+}
+
+.button:hover:not(:active):not([disabled]):not(button[aria-disabled=true]):not([aria-disabled=true].button) {
+    transform: translate(-0.25rem,-0.25rem);
+    box-shadow: 0.25rem 0.25rem #000;
+}
+
