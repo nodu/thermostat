@@ -4,15 +4,18 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
+	"math"
 	"net/http"
 	"net/http/httputil"
 	"os"
 	"os/exec"
 	"strconv"
+	"strings"
 )
 
 type Temperature struct {
-	Value float64 `json:"value"`
+	Set  float64 `json:"set"`
+	Real float64 `json:"real"`
 }
 
 var temperature Temperature
@@ -20,13 +23,15 @@ var temperature Temperature
 func main() {
 	//Setup Port and initalize temperature
 	port := ":8080"
-	temperature.Value = readDatabase()
+	temperature.Set = readDatabase()
+	temperature.Real = getTemperatureHW()
 
 	fmt.Println("Server Running on", port)
-	fmt.Println("Inital Temperature is:", temperature.Value)
+	fmt.Println("Inital Temperature is:", temperature.Set)
 
 	// Define the API endpoint
-	http.HandleFunc("/temperature", temperatureHandler)
+	http.HandleFunc("/api/realTemperature", realTemperatureHandler)
+	http.HandleFunc("/api/temperature", temperatureHandler)
 
 	// Start the server
 	log.Fatal(http.ListenAndServe(port, nil))
@@ -63,6 +68,50 @@ func temperatureHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func realTemperatureHandler(w http.ResponseWriter, r *http.Request) {
+	switch r.Method {
+	case "GET":
+		getRealTemperature(w, r)
+	case "POST":
+	default:
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+	}
+}
+
+func getTemperatureHW() float64 {
+	cmd := exec.Command("/usr/bin/python", "/home/pi/thermostat/hw/checkTemp.py", strconv.Itoa(4))
+
+	stdouterr, exiterr := cmd.CombinedOutput()
+	if exiterr != nil {
+		log.Fatal(exiterr)
+	}
+
+	cel, err := strconv.ParseFloat(strings.TrimSuffix(string(stdouterr), "\n"), 32)
+	if err != nil {
+		panic(err)
+	}
+	far := (cel * 1.8) + 32
+	farRound := math.Round(far*100) / 100
+
+	temperature.Real = farRound
+	return farRound
+}
+
+func getRealTemperature(w http.ResponseWriter, r *http.Request) {
+	// Marshal the temperature struct into JSON
+	getTemperatureHW()
+	tempJSON, err := json.Marshal(temperature)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	// Set the content type header and write the JSON response
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	w.Write(tempJSON)
+}
+
 func getTemperature(w http.ResponseWriter, r *http.Request) {
 	// Marshal the temperature struct into JSON
 	tempJSON, err := json.Marshal(temperature)
@@ -90,8 +139,8 @@ func setTemperature(w http.ResponseWriter, r *http.Request) {
 	// todo Move set temperature at hw level out of the setTemperature http handler
 	// Unmarshal the JSON request body into the temperature struct
 	decodeErrQuestion := json.NewDecoder(r.Body).Decode(&temperature)
-	fmt.Printf("temperature.Value: %v\n", temperature.Value)
-	switch temperature.Value {
+	fmt.Printf("temperature.Value: %v\n", temperature.Set)
+	switch temperature.Set {
 	case 0:
 		position = -.8
 	case 70:
@@ -101,6 +150,7 @@ func setTemperature(w http.ResponseWriter, r *http.Request) {
 	case 75:
 		position = .6
 	}
+	position = .3
 
 	cmd := exec.Command("/usr/bin/python", "/home/pi/thermostat/hw/on.py", fmt.Sprintf("%f", position))
 	cmd.Env = append(cmd.Environ(), "GPIOZERO_PIN_FACTORY=pigpio")
@@ -116,7 +166,7 @@ func setTemperature(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	// Write temperature from UI to databsase
-	writeDatabase(temperature.Value)
+	writeDatabase(temperature.Set)
 
 	// Set the content type header and write the success response
 	w.Header().Set("Content-Type", "application/json")

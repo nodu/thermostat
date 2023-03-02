@@ -4,17 +4,29 @@ function App() {
   const [temperature, setTemperature] = useState(0);
   const [newTemperature, setNewTemperature] = useState(0);
   const [newVal, setNewVal] = useState(0);
+  const [realTemperature, setRealTemperature] = useState(0);
 
   useEffect(() => {
     handleGetTemperature();
+    handleGetRealTemperature();
   }, []);
+
+  const handleGetRealTemperature = async () => {
+    try {
+      const response = await fetch("/api/realTemperature");
+      const data = await response.json();
+      setRealTemperature(data.real);
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   const handleGetTemperature = async () => {
     try {
-      const response = await fetch("/temperature");
+      const response = await fetch("/api/temperature");
       const data = await response.json();
-      setTemperature(data.value);
-      setNewVal(data.value);
+      setTemperature(data.set);
+      setNewVal(data.set);
     } catch (error) {
       console.error(error);
     }
@@ -22,7 +34,7 @@ function App() {
 
   const handleSetTemperature = async () => {
     try {
-      const response = await fetch("/temperature", {
+      const response = await fetch("/api/temperature", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -69,6 +81,7 @@ function App() {
     <div>
       <hr />
       <p>"Set" Temperature: {newVal}</p>
+      <p>"Real" Temperature: {realTemperature}</p>
       <button className="button" value={0} onClick={setSetNewTemp}>off</button>
       <button className="button" value={70} onClick={setSetNewTemp}>70</button>
       <button className="button" value={72} onClick={setSetNewTemp}>72</button>

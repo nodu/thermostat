@@ -32,9 +32,9 @@ python thermostat/hw/DHT.py 4
 
 ~/go/bin/air .
 
-nginx block:
+nginx block in /etc/nginx/sites-available/default:
 	root /var/www/thermo/html;
-	location /temperature {
+	location /api {
 		proxy_pass http://localhost:8080;
 		proxy_set_header X-Forwarded-Host $server_name;
     proxy_set_header X-Forwarded-Proto https;
