@@ -51,7 +51,7 @@ function App() {
   return (
     <div>
       <p>"Set" Temperature: {temperature}</p>
-      <p>"Real" Temperature: {realTemperature || "..."}</p>
+      <p className="text-red-700">"Real" Temperature: {realTemperature || "..."}</p>
       <button className="button" value={0} onClick={handleTemperatureChange}>off</button>
       <button className="button" value={70} onClick={handleTemperatureChange}>70</button>
       <button className="button" value={72} onClick={handleTemperatureChange}>72</button>
