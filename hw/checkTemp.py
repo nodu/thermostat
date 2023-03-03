@@ -243,7 +243,9 @@ if __name__== "__main__":
             if s[0] >= 100:
                s[1].read() # values displayed by callback
             else:
+               e = s[1].read()
                d = s[1].read()
+               #Seemingly fix issue where first read is the last value read
                print(d[3])
                #print("{:.3f} {:2d} {} {:3.1f} {:3.1f}".format(d[0], d[1], d[2], d[3], d[4]))
          time.sleep(2)

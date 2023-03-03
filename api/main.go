@@ -139,7 +139,8 @@ func setTemperature(w http.ResponseWriter, r *http.Request) {
 	// todo Move set temperature at hw level out of the setTemperature http handler
 	// Unmarshal the JSON request body into the temperature struct
 	decodeErrQuestion := json.NewDecoder(r.Body).Decode(&temperature)
-	fmt.Printf("temperature.Value: %v\n", temperature.Set)
+	fmt.Printf("temperature.Set: %v\n", temperature.Set)
+
 	switch temperature.Set {
 	case 0:
 		position = -.8
@@ -150,7 +151,6 @@ func setTemperature(w http.ResponseWriter, r *http.Request) {
 	case 75:
 		position = .6
 	}
-	position = .3
 
 	cmd := exec.Command("/usr/bin/python", "/home/pi/thermostat/hw/on.py", fmt.Sprintf("%f", position))
 	cmd.Env = append(cmd.Environ(), "GPIOZERO_PIN_FACTORY=pigpio")
