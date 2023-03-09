@@ -4,10 +4,12 @@ function App() {
   const [temperature, setTemperature] = useState(0);
   const [realTemperature, setRealTemperature] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
+  const [isCronEnabled, setIsCronEnabled] = useState(false);
 
   useEffect(() => {
     handleGetTemperature();
     handleGetRealTemperature();
+    handleGetCronEnabled();
   }, []);
 
   const handleGetRealTemperature = async () => {
@@ -25,6 +27,34 @@ function App() {
       const response = await fetch("/api/temperature");
       const data = await response.json();
       setTemperature(data.set);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const handleGetCronEnabled = async () => {
+    try {
+      const response = await fetch("/api/cron");
+      const data = await response.json();
+      setIsCronEnabled(data.cron);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const handleToggleCron = async () => {
+    setIsLoading(true);
+    try {
+      const response = await fetch("/api/cron", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ cron: !isCronEnabled }),
+      });
+      await response.json();
+      setIsCronEnabled(!isCronEnabled);
+      setIsLoading(false);
     } catch (error) {
       console.error(error);
     }
@@ -52,12 +82,15 @@ function App() {
     <div>
       <p>"Set" Temperature: {temperature}</p>
       <p className="text-red-700">"Real" Temperature: {realTemperature || "..."}</p>
+      <p className="text-sky-500">Cron Enabled: {isCronEnabled ? "Yes" : "No"}</p>
       <button className="button" value={0} onClick={handleTemperatureChange}>off</button>
       <button className="button" value={70} onClick={handleTemperatureChange}>70</button>
       <button className="button" value={72} onClick={handleTemperatureChange}>72</button>
       <button className="button" value={75} onClick={handleTemperatureChange}>75</button>
-      <div class={isLoading && "loader loader-position"}></div>
-    </div>
+      <div className={isLoading ? "loader loader-position" : undefined}></div>
+      <hr />
+      <button className="button" onClick={handleToggleCron}>Toggle Cron Enabled</button>
+    </div >
   );
 }
 
