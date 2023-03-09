@@ -80,16 +80,16 @@ function App() {
 
   return (
     <div>
+      <div className={isLoading ? "loader loader-position" : undefined}></div>
       <p>"Set" Temperature: {temperature}</p>
       <p className="text-red-700">"Real" Temperature: {realTemperature || "..."}</p>
-      <p className="text-sky-500">Cron Enabled: {isCronEnabled ? "Yes" : "No"}</p>
       <button className="button" value={0} onClick={handleTemperatureChange}>off</button>
       <button className="button" value={70} onClick={handleTemperatureChange}>70</button>
       <button className="button" value={72} onClick={handleTemperatureChange}>72</button>
       <button className="button" value={75} onClick={handleTemperatureChange}>75</button>
-      <div className={isLoading ? "loader loader-position" : undefined}></div>
       <hr />
-      <button className="button" onClick={handleToggleCron}>Toggle Cron Enabled</button>
+      <p className="text-sky-500">Schedule Enabled: {isCronEnabled ? "Yes" : "No"}</p>
+      <button className="button" onClick={handleToggleCron}>Toggle Schedule Enabled</button>
     </div >
   );
 }

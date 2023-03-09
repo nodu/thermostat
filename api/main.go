@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/go-co-op/gocron"
 	"log"
 	"math"
 	"net/http"
@@ -11,6 +12,7 @@ import (
 	"os/exec"
 	"strconv"
 	"strings"
+	"time"
 )
 
 type Temperature struct {
@@ -31,7 +33,7 @@ func main() {
 	fmt.Println("Server Running on", port)
 	fmt.Println("Inital Temperature is:", temperature.Set)
 	fmt.Println("Is Cron enabled?", temperature.CronEnabled)
-
+	setupCron()
 	// Define the API endpoint
 	http.HandleFunc("/api/realTemperature", realTemperatureHandler)
 	http.HandleFunc("/api/temperature", temperatureHandler)
@@ -108,6 +110,36 @@ func cronHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
 	}
 }
+
+func setupCron() {
+	fmt.Println("Current Time: ", time.Now().String())
+	s := gocron.NewScheduler(time.Local)
+
+	var turnOn = func() {
+		if temperature.CronEnabled == true {
+			fmt.Println("Turning Heater on to 70")
+			temperature.Set = 70
+			setTemperatureHW()
+		}
+	}
+	var turnOff = func() {
+		if temperature.CronEnabled == true {
+			fmt.Println("Turning Heater off")
+			temperature.Set = 0
+			setTemperatureHW()
+		}
+	}
+	_, _ = s.Every(1).Day().At("06:50").Do(turnOn)
+	_, _ = s.Every(1).Day().At("22:00").Do(turnOff)
+	s.StartAsync()
+}
+
+// func imCold() {
+// triggered from post to /cold
+// temperature.Set = 75
+// setTemperatureHW()
+// in 5 minutes from now, set temperature back to previous value
+// }
 
 func getTemperatureHW() float64 {
 	cmd := exec.Command("/usr/bin/python", "/home/pi/thermostat/hw/checkTemp.py", strconv.Itoa(4))
