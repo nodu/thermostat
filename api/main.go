@@ -195,21 +195,8 @@ func setCronEnabled(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte(`{"message": "Cron updated"}`))
 }
 
-func setTemperaturePost(w http.ResponseWriter, r *http.Request) {
-	var position float32 // TODO= read file or init from memory
-
-	fmt.Printf("r.Body: %v\n", r.Body)
-
-	requestDump, err := httputil.DumpRequest(r, true)
-	if err != nil {
-		fmt.Println(err)
-	}
-	fmt.Println(string(requestDump))
-	// todo Move set temperature at hw level out of the setTemperature http handler
-	// Unmarshal the JSON request body into the temperature struct
-	decodeErrQuestion := json.NewDecoder(r.Body).Decode(&temperature)
-	fmt.Printf("temperature.Set: %v\n", temperature.Set)
-
+func setTemperatureHW() {
+	var position float32
 	switch temperature.Set {
 	case 0:
 		position = -.8
@@ -230,13 +217,29 @@ func setTemperaturePost(w http.ResponseWriter, r *http.Request) {
 	}
 	fmt.Printf("%s\n", stdouterr)
 
+	// Write temperature from UI to databsase
+	writeDatabaseTemp(temperature.Set)
+}
+
+func setTemperaturePost(w http.ResponseWriter, r *http.Request) {
+
+	fmt.Printf("r.Body: %v\n", r.Body)
+
+	requestDump, err := httputil.DumpRequest(r, true)
+	if err != nil {
+		fmt.Println(err)
+	}
+	fmt.Println(string(requestDump))
+
+	// Unmarshal the JSON request body into the temperature struct
+	decodeErrQuestion := json.NewDecoder(r.Body).Decode(&temperature)
+	fmt.Printf("temperature.Set: %v\n", temperature.Set)
+
 	if decodeErrQuestion != nil {
 		http.Error(w, decodeErrQuestion.Error(), http.StatusBadRequest)
 		return
 	}
-	// Write temperature from UI to databsase
-	writeDatabaseTemp(temperature.Set)
-
+	setTemperatureHW()
 	// Set the content type header and write the success response
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusCreated)
