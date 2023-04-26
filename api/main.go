@@ -238,6 +238,8 @@ func setTemperatureHW() {
 		position = .45
 	case 75:
 		position = .6
+	case 80:
+		position = .75
 	}
 
 	cmd := exec.Command("/usr/bin/python", "/home/pi/thermostat/hw/on.py", fmt.Sprintf("%f", position))

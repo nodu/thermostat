@@ -87,6 +87,7 @@ function App() {
       <button className="button" value={70} onClick={handleTemperatureChange}>70</button>
       <button className="button" value={72} onClick={handleTemperatureChange}>72</button>
       <button className="button" value={75} onClick={handleTemperatureChange}>75</button>
+      <button className="button" value={80} onClick={handleTemperatureChange}>80</button>
       <hr />
       <p className="text-sky-500">Schedule Enabled: {isCronEnabled ? "Yes" : "No"}</p>
       <button className="button" onClick={handleToggleCron}>Toggle Schedule Enabled</button>
